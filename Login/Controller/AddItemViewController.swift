@@ -16,8 +16,7 @@ class AddItemViewController: UIViewController {
     private weak var datePickerControl: UIDatePicker!
     private weak var addButton: UIButton!
     private var buttonTitle = "";
-    private var itemViewModel: ItemViewModel = ItemViewModel()
-    private var itemFuncViewModel: ItemFuncViewModel = ItemFuncViewModel()
+    private var addItemFuncViewModel: AddItemFuncViewModel = AddItemFuncViewModel()
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -137,14 +136,13 @@ class AddItemViewController: UIViewController {
         guard let summary = summaryField.text else {
             return
         }
-        let date = itemFuncViewModel.formatDate(date: datePickerControl.date)
+        let date = addItemFuncViewModel.formatDate(date: datePickerControl.date)
         if summary.count > 0 {
             if indexPath != nil {
-                itemViewModel.callFuncUpdateItemData(updatedSummary: summary, updatedDate: date, indexPath: indexPath)
+                addItemFuncViewModel.callFuncUpdateItemData(updatedSummary: summary, updatedDate: date, indexPath: indexPath)
             }else{
-                itemViewModel.callFuncInsertItemData(summary: summary, date: date)
+                addItemFuncViewModel.callFuncInsertItemData(summary: summary, date: date)
             }
-            itemFuncViewModel.updateable = false
             navigationController?.popViewController(animated: true)
         } else {
             showAlert(title: "Invalid inputField", message: "The input value must be more than 2 lines.")

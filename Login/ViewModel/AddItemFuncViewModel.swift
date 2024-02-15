@@ -7,15 +7,17 @@
 
 import UIKit
 
-class ItemFuncViewModel {
+class AddItemFuncViewModel {
     
     private var apiService: ApiService = ApiService()
     private var items: [ItemData] = []
-    public var updateable = false;
-    private var count: Int = 0
     
-    init() {
-        self.items = apiService.getItemData()
+    public func callFuncInsertItemData(summary: String, date: String){
+        apiService.insertItemData(item: ItemData(summary: summary, date: date))
+    }
+    
+    public func callFuncUpdateItemData(updatedSummary: String, updatedDate: String, indexPath: Int){
+        apiService.updateItemData(updatedSummary: updatedSummary, updatedDate: updatedDate, indexPath: indexPath)
     }
     
     public func summaryOfIndex(indexPath: IndexPath)-> String{

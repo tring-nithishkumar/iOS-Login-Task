@@ -11,8 +11,7 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     private let userName: String
     private var label: UILabel!
-    private var itemViewModel: ItemViewModel = ItemViewModel()
-    private var itemFuncViewModel: ItemFuncViewModel!
+    private var updateItemFuncViewModel: UpdateItemFuncViewModel!
     private var tableView: UITableView!
     private var expandedCell: IndexSet = []
 
@@ -34,8 +33,8 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        itemFuncViewModel = ItemFuncViewModel()
-        itemViewModel.callFuncGetItemData()
+        updateItemFuncViewModel = UpdateItemFuncViewModel()
+        updateItemFuncViewModel.callFuncGetItemData()
         tableView.reloadData()
         handleTableView()
     }
@@ -84,12 +83,12 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemViewModel.numberOfItems()
+        return updateItemFuncViewModel.numberOfItems()
     }
 
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CustomTableViewCell else { return UITableViewCell() }
-        cell.configure(summary: itemFuncViewModel.summaryOfIndex(indexPath: indexPath), date: itemFuncViewModel.dateOfIndex(indexPath: indexPath))
+        cell.configure(summary: updateItemFuncViewModel.summaryOfIndex(indexPath: indexPath), date: updateItemFuncViewModel.dateOfIndex(indexPath: indexPath))
         cell.selectionStyle = .none
         
         if expandedCell.contains(indexPath.row){
@@ -113,9 +112,8 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
 
         cell.summaryClicked = {
-            self.itemFuncViewModel.updateable = true
-            let selectedSummary = self.itemFuncViewModel.summaryOfIndex(indexPath: indexPath)
-            let selectedDate = self.itemFuncViewModel.dateOfIndex(indexPath: indexPath)
+            let selectedSummary = self.updateItemFuncViewModel.summaryOfIndex(indexPath: indexPath)
+            let selectedDate = self.updateItemFuncViewModel.dateOfIndex(indexPath: indexPath)
             if let navigationController = self.navigationController {
                 let updateItemViewController = AddItemViewController(summary: selectedSummary, date: selectedDate, indexPath: indexPath.row)
                 navigationController.pushViewController(updateItemViewController, animated: true)
@@ -130,7 +128,7 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     internal func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            itemViewModel.callFuncRemoveItemData(index: indexPath.row)
+            updateItemFuncViewModel.callFuncRemoveItemData(index: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             handleTableView()
         }
@@ -148,12 +146,12 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @objc private func handleClear() {
         label.isHidden = false
         tableView.isHidden = true
-        itemViewModel.callFuncRemoveAllItemData()
+        updateItemFuncViewModel.callFuncRemoveAllItemData()
         tableView.reloadData()
     }
     
     private func handleTableView(){
-        if itemViewModel.numberOfItems() == 0 {
+        if updateItemFuncViewModel.numberOfItems() == 0 {
             label.isHidden = false
             tableView.isHidden = true
         } else {
