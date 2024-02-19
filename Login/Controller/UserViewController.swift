@@ -86,7 +86,6 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     internal func numberOfSections(in tableView: UITableView) -> Int {
-//        print(updateItemFuncViewModel.numberOfSections())
         return userItemFuncViewModel.numberOfSections()
     }
     
@@ -121,11 +120,7 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
            
         cell.moreButtonClicked = {
-            if self.userItemFuncViewModel.selectedIndexPath(indexPath: indexPath){
-                self.userItemFuncViewModel.setExpandView(indexPath: indexPath)
-            } else {
-                self.userItemFuncViewModel.setExpandView(indexPath: indexPath)
-            }
+            self.userItemFuncViewModel.setExpandView(indexPath: indexPath)
             tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
         }
 

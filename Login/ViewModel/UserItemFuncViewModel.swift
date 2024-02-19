@@ -50,7 +50,6 @@ class UserItemFuncViewModel {
     public func idOfIndex(indexPath: IndexPath)-> Int{
         let date = sections[indexPath.section]
         if let items = itemsGroupedByDate[date] {
-            print(items)
             if indexPath.row < items.count{
                 return items[indexPath.row].id ?? 0
             }
@@ -105,6 +104,7 @@ class UserItemFuncViewModel {
     }
     
     public func setExpandView(indexPath: IndexPath){
+        
         let id = idOfIndex(indexPath: indexPath)
             
         guard let index = items.firstIndex(where: { $0.id == id }) else {
