@@ -11,7 +11,7 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     private let userName: String
     private var label: UILabel!
-    private var updateItemFuncViewModel: UpdateItemFuncViewModel!
+    private var userItemFuncViewModel: UserItemFuncViewModel!
     private var tableView: UITableView!
     private var expandedCell: IndexSet = []
 
@@ -33,8 +33,11 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateItemFuncViewModel = UpdateItemFuncViewModel()
-        updateItemFuncViewModel.callFuncGetItemData()
+        userItemFuncViewModel = UserItemFuncViewModel()
+//        updateItemFuncViewModel.callFuncGetItemData()
+        
+        userItemFuncViewModel.groupItemsByDate()
+        
         tableView.reloadData()
         handleTableView()
     }
@@ -81,17 +84,33 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tableView.estimatedRowHeight = 100
         view.addSubview(tableView)
     }
+    
+    internal func numberOfSections(in tableView: UITableView) -> Int {
+//        print(updateItemFuncViewModel.numberOfSections())
+        return userItemFuncViewModel.numberOfSections()
+    }
+    
+    internal func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return userItemFuncViewModel.sections[section]
+    }
 
     internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return updateItemFuncViewModel.numberOfItems()
+        let date = userItemFuncViewModel.sections[section]
+        return userItemFuncViewModel.numberOfItemsGroupedByDate(date: date)
     }
 
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CustomTableViewCell else { return UITableViewCell() }
-        cell.configure(summary: updateItemFuncViewModel.summaryOfIndex(indexPath: indexPath), date: updateItemFuncViewModel.dateOfIndex(indexPath: indexPath))
+        
+        let date = userItemFuncViewModel.sections[indexPath.section]
+        if let items = userItemFuncViewModel.itemsGroupedByDate[date] {
+            let item = items[indexPath.row]
+            cell.configure(summary: item.summary, date: item.date)
+        }
+        
         cell.selectionStyle = .none
         
-        if expandedCell.contains(indexPath.row){
+        if userItemFuncViewModel.selectedIndexPath(indexPath: indexPath){
             cell.summaryButton.titleLabel?.numberOfLines = 0
             cell.moreButton.setTitle("See Less", for: .normal)
             cell.summaryButtonHeightConstraint.isActive = false
@@ -102,20 +121,18 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
            
         cell.moreButtonClicked = {
-            print(indexPath.row)
-            if self.expandedCell.contains(indexPath.row){
-                self.expandedCell.remove(indexPath.row)
+            if self.userItemFuncViewModel.selectedIndexPath(indexPath: indexPath){
+                self.userItemFuncViewModel.setExpandView(indexPath: indexPath)
             } else {
-                self.expandedCell.insert(indexPath.row)
+                self.userItemFuncViewModel.setExpandView(indexPath: indexPath)
             }
             tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
         }
 
         cell.summaryClicked = {
-            let selectedSummary = self.updateItemFuncViewModel.summaryOfIndex(indexPath: indexPath)
-            let selectedDate = self.updateItemFuncViewModel.dateOfIndex(indexPath: indexPath)
+            let selectedItem = self.userItemFuncViewModel.itemOfIndex(indexPath: indexPath)
             if let navigationController = self.navigationController {
-                let updateItemViewController = AddItemViewController(summary: selectedSummary, date: selectedDate, indexPath: indexPath.row)
+                let updateItemViewController = AddItemViewController(summary: selectedItem.summary, date: selectedItem.date, id: selectedItem.id ?? 0)
                 navigationController.pushViewController(updateItemViewController, animated: true)
             }
         }
@@ -128,8 +145,19 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     internal func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            updateItemFuncViewModel.callFuncRemoveItemData(index: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            userItemFuncViewModel.callFuncRemoveItemData(indexPath: indexPath)
+            
+            let date = userItemFuncViewModel.sections[indexPath.section]
+            userItemFuncViewModel.itemsGroupedByDate[date]?.remove(at: indexPath.row)
+
+            if userItemFuncViewModel.itemsGroupedByDate[date]?.isEmpty ?? false {
+                userItemFuncViewModel.sections.remove(at: indexPath.section)
+
+                tableView.reloadData()
+            } else {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+            
             handleTableView()
         }
     }
@@ -146,12 +174,12 @@ class UserViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @objc private func handleClear() {
         label.isHidden = false
         tableView.isHidden = true
-        updateItemFuncViewModel.callFuncRemoveAllItemData()
+        userItemFuncViewModel.callFuncRemoveAllItemData()
         tableView.reloadData()
     }
     
     private func handleTableView(){
-        if updateItemFuncViewModel.numberOfItems() == 0 {
+        if userItemFuncViewModel.numberOfSections() == 0 {
             label.isHidden = false
             tableView.isHidden = true
         } else {

@@ -16,8 +16,8 @@ class AddItemFuncViewModel {
         apiService.insertItemData(item: ItemData(summary: summary, date: date))
     }
     
-    public func callFuncUpdateItemData(updatedSummary: String, updatedDate: String, indexPath: Int){
-        apiService.updateItemData(updatedSummary: updatedSummary, updatedDate: updatedDate, indexPath: indexPath)
+    public func callFuncUpdateItemData(updatedSummary: String, updatedDate: String, id: Int){
+        apiService.updateItemData(updatedSummary: updatedSummary, updatedDate: updatedDate, id: id)
     }
     
     public func summaryOfIndex(indexPath: IndexPath)-> String{

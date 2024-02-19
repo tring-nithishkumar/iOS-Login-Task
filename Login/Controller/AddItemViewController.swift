@@ -11,7 +11,7 @@ class AddItemViewController: UIViewController {
     
     private var summary: String!
     private var date: String!
-    private var indexPath: Int!
+    private var id: Int!
     private weak var summaryField: UITextView!
     private weak var datePickerControl: UIDatePicker!
     private weak var addButton: UIButton!
@@ -22,10 +22,10 @@ class AddItemViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    init(summary: String, date: String, indexPath: Int) {
+    init(summary: String, date: String, id: Int) {
         self.summary = summary
         self.date = date
-        self.indexPath = indexPath
+        self.id = id
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,7 +41,7 @@ class AddItemViewController: UIViewController {
     private func addUI() {
         view.backgroundColor = .white
         
-        if indexPath != nil {
+        if id != nil {
             title = "Update Item"
             buttonTitle = "Update"
         }else{
@@ -100,7 +100,7 @@ class AddItemViewController: UIViewController {
         view.addSubview(datePicker)
         
         if date != nil {
-            dateFormatter.dateFormat = "MMM dd yyyy HH:mm a"
+            dateFormatter.dateFormat = "MMM dd yyyy hh:mm a"
             if let date = dateFormatter.date(from: date) {
                 datePicker.date = date
             } else {
@@ -138,8 +138,8 @@ class AddItemViewController: UIViewController {
         }
         let date = addItemFuncViewModel.formatDate(date: datePickerControl.date)
         if summary.count > 0 {
-            if indexPath != nil {
-                addItemFuncViewModel.callFuncUpdateItemData(updatedSummary: summary, updatedDate: date, indexPath: indexPath)
+            if id != nil {
+                addItemFuncViewModel.callFuncUpdateItemData(updatedSummary: summary, updatedDate: date, id: id)
             }else{
                 addItemFuncViewModel.callFuncInsertItemData(summary: summary, date: date)
             }
@@ -150,6 +150,7 @@ class AddItemViewController: UIViewController {
     }
     
     @objc private func handleDate(datePicker: UIDatePicker) {
+        print(datePicker.date)
         datePickerControl.date = datePicker.date
     }
     

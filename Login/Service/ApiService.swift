@@ -38,16 +38,16 @@ class ApiService{
         }
     }
     
-    public func updateItemData(updatedSummary: String, updatedDate: String, indexPath: Int) {
+    public func updateItemData(updatedSummary: String, updatedDate: String, id: Int) {
         var items = getItemData()
-        
-        guard indexPath < items.count else {
-            print("Error: IndexPath is out of bounds")
+
+        guard let index = items.firstIndex(where: { $0.id == id }) else {
+            print("Error: Item with ID \(id) not found")
             return
         }
-        
-        items[indexPath].summary = updatedSummary
-        items[indexPath].date = updatedDate
+
+        items[index].summary = updatedSummary
+        items[index].date = updatedDate
         
         do {
             let encodedData = try JSONEncoder().encode(items)
