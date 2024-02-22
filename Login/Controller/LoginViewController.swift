@@ -16,12 +16,12 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         view.endEditing(true)
-	
+
         userNameTextField.isUserInteractionEnabled = false
         passwordTextField.isUserInteractionEnabled = false
     }
@@ -104,8 +104,17 @@ class LoginViewController: UIViewController {
     }
 
     private func redirectToUserPage(userName: String) {
-        let userViewController = UserViewController(userName: userName)
-        navigationController?.pushViewController(userViewController, animated: true)
+        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+
+        guard let homeViewController =
+                storyBoard.instantiateViewController(
+                    withIdentifier: "HomeViewController"
+                ) as? HomeViewController else {
+                fatalError("Invalid storyboard")
+            }
+
+        homeViewController.userName = userName
+        navigationController?.pushViewController(homeViewController, animated: true)
         clearTextFields()
     }
 

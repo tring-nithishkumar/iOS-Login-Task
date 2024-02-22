@@ -7,9 +7,9 @@
 
 import UIKit
 
-class ApiService{
+class ApiService {
 
-    public func getItemData() -> [ItemData] {
+    func getItemData() -> [ItemData] {
         guard let returnData = UserDefaults.standard.data(forKey: "data") else {
             print("Error retrieving data from UserDefaults")
             return []
@@ -23,8 +23,8 @@ class ApiService{
             return []
         }
     }
-    
-    public func insertItemData(item: ItemData) {
+
+    func insertItemData(item: ItemData) {
         do {
             var decodedData = getItemData()
             let newId = decodedData.count + 1
@@ -37,8 +37,8 @@ class ApiService{
             print("Error insert data: \(error)")
         }
     }
-    
-    public func updateItemData(updatedSummary: String, updatedDate: String, id: Int) {
+
+    func updateItemData(updatedSummary: String, updatedDate: String, id: Int) {
         var items = getItemData()
 
         guard let index = items.firstIndex(where: { $0.id == id }) else {
@@ -48,7 +48,7 @@ class ApiService{
 
         items[index].summary = updatedSummary
         items[index].date = updatedDate
-        
+
         do {
             let encodedData = try JSONEncoder().encode(items)
             UserDefaults.standard.set(encodedData, forKey: "data")
@@ -58,8 +58,7 @@ class ApiService{
         }
     }
 
-    
-    public func removeItemData(data: [ItemData]) {
+    func removeItemData(data: [ItemData]) {
         do {
             let encodedData = try JSONEncoder().encode(data)
             UserDefaults.standard.set(encodedData, forKey: "data")
@@ -68,8 +67,8 @@ class ApiService{
             print("Error encoding data: \(error)")
         }
     }
-    
-    public func removeAllItemData() {
+
+    func removeAllItemData() {
         UserDefaults.standard.removeObject(forKey: "data")
         print("Success")
     }

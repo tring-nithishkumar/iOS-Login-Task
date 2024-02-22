@@ -7,35 +7,29 @@
 
 import UIKit
 
-class UserItemFuncViewModel {
-    
+class TableItemFuncViewModel {
+
     private var apiService: ApiService = ApiService()
     private var items: [ItemData] = []
-    
-    public var sections: [String] = []
-    public var itemsGroupedByDate: [String: [ItemData]] = [:]
-    
-    public func callFuncRemoveItemData(indexPath: IndexPath){
-        
-        let id = idOfIndex(indexPath: indexPath)
-            
-        guard let index = items.firstIndex(where: { $0.id == id }) else {
-            print("Error: Item with ID \(id) not found")
-            return
-        }
-        
+    var sections: [String] = []
+    var itemsGroupedByDate: [String: [ItemData]] = [:]
+
+    func callFuncRemoveItemData(indexPath: IndexPath) {
+
+        let index = findIndex(indexPath: indexPath)
+
         items.remove(at: index)
         apiService.removeItemData(data: items)
     }
-    
-    public func callFuncRemoveAllItemData(){
+
+    func callFuncRemoveAllItemData() {
         items.removeAll()
         apiService.removeAllItemData()
     }
-    
-    public func itemOfIndex(indexPath: IndexPath) -> ItemData{
+
+    func itemOfIndex(indexPath: IndexPath) -> ItemData {
         let date = sections[indexPath.section]
-        
+
         if let items = itemsGroupedByDate[date], indexPath.row < items.count {
             let summary = items[indexPath.row].summary
             let date = items[indexPath.row].date
@@ -47,24 +41,24 @@ class UserItemFuncViewModel {
         return ItemData(id: 0, summary: "", date: "")
     }
 
-    public func idOfIndex(indexPath: IndexPath)-> Int{
+    func idOfIndex(indexPath: IndexPath) -> Int {
         let date = sections[indexPath.section]
         if let items = itemsGroupedByDate[date] {
-            if indexPath.row < items.count{
+            if indexPath.row < items.count {
                 return items[indexPath.row].id ?? 0
             }
         }
 
-        return 0;
+        return 0
     }
-    
-    public func formatDate(date: Date) -> String {
+
+    func formatDate(date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd yyyy hh:mm a"
         return formatter.string(from: date)
     }
-    
-    public func groupItemsByDate() {
+
+    func groupItemsByDate() {
         items = apiService.getItemData()
 
         for item in items {
@@ -83,40 +77,36 @@ class UserItemFuncViewModel {
 
         sections.sort { $0 < $1 }
     }
-    
-    public func numberOfSections()-> Int{
+
+    func numberOfSections() -> Int {
         sections.count
     }
-    
-    public func numberOfItemsGroupedByDate(date: String)-> Int{
+
+    func numberOfItemsGroupedByDate(date: String) -> Int {
         itemsGroupedByDate[date]?.count ?? 0
     }
-    
-    public func selectedIndexPath(indexPath: IndexPath)-> Bool{
+
+    func findIndex(indexPath: IndexPath) -> Int {
         let id = idOfIndex(indexPath: indexPath)
-            
+
         guard let index = items.firstIndex(where: { $0.id == id }) else {
             print("Error: Item with ID \(id) not found")
-            return false;
+            return 0
         }
-        
+
+        return index
+    }
+
+    func selectedIndexPath(indexPath: IndexPath) -> Bool {
+        let index = findIndex(indexPath: indexPath)
+
         return items[index].isExpanded
     }
-    
-    public func setExpandView(indexPath: IndexPath){
-        
-        let id = idOfIndex(indexPath: indexPath)
-            
-        guard let index = items.firstIndex(where: { $0.id == id }) else {
-            print("Error: Item with ID \(id) not found")
-            return
-        }
-        
-        if items[index].isExpanded{
-            items[index].isExpanded = false
-        }else{
-            items[index].isExpanded = true
-        }
+
+    func setExpandView(indexPath: IndexPath) {
+        let index = findIndex(indexPath: indexPath)
+
+        items[index].isExpanded.toggle()
     }
-    
+
 }

@@ -12,4 +12,4 @@ struct ItemData: Codable {
     var summary: String
     var date: String
     var isExpanded: Bool = false
-}	
+}
