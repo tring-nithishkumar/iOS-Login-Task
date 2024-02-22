@@ -11,6 +11,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
     var handleImageTapped: (() -> Void)!
+    var handleTapped: (() -> Void)!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,6 +25,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
     }
 
     @objc func imageTapped() {
-        handleImageTapped()
+//        handleImageTapped()
+        handleTapped()
     }
 }

@@ -47,31 +47,41 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             collectionFuncViewModel.callDownloadImageFunc(imageUrl: imageUrl) { (image) in
                 DispatchQueue.main.async {
                     cell.imageView.image = image
-                }
-            }
-        }
-
-        cell.handleImageTapped = {
-            if let imageUrl = URL(string: self.collectionFuncViewModel.photoDetailOfIndex(indexPath: indexPath)) {
-                self.collectionFuncViewModel.callDownloadImageFunc(imageUrl: imageUrl) { (image) in
-                    DispatchQueue.main.async {
-                        if let image = image {
-                            let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-                            guard let imageViewController =
-                                    storyBoard.instantiateViewController(
-                                        withIdentifier: "ImageViewController"
-                                    ) as? ImageViewController else {
-                                    fatalError("Invalid storyboard")
-                                }
-                            imageViewController.passedImage = image
-                            self.navigationController?.pushViewController(imageViewController, animated: true)
-                        } else {
-                            print("Error: Downloaded image is nil")
+                    cell.handleTapped = {
+                        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+                        guard let imageViewController = storyBoard.instantiateViewController(
+                            withIdentifier: "ImageViewController"
+                        ) as? ImageViewController else {
+                            fatalError("Invalid storyboard")
                         }
+                        imageViewController.passedImage = image
+                        self.navigationController?.pushViewController(imageViewController, animated: true)
                     }
                 }
             }
         }
+
+//        cell.handleImageTapped = {
+//            if let imageUrl = URL(string: self.collectionFuncViewModel.photoDetailOfIndex(indexPath: indexPath)) {
+//                self.collectionFuncViewModel.callDownloadImageFunc(imageUrl: imageUrl) { (image) in
+//                    DispatchQueue.main.async {
+//                        if let image = image {
+//                            let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+//                            guard let imageViewController =
+//                                    storyBoard.instantiateViewController(
+//                                        withIdentifier: "ImageViewController"
+//                                    ) as? ImageViewController else {
+//                                    fatalError("Invalid storyboard")
+//                                }
+//                            imageViewController.passedImage = image
+//                            self.navigationController?.pushViewController(imageViewController, animated: true)
+//                        } else {
+//                            print("Error: Downloaded image is nil")
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         return cell
     }
