@@ -16,7 +16,9 @@ class TableItemFuncViewModel {
 
     func callFuncRemoveItemData(indexPath: IndexPath) {
 
-        let index = findIndex(indexPath: indexPath)
+        guard let index = findIndex(indexPath: indexPath), items.indices.contains(index) else {
+            return
+        }
 
         items.remove(at: index)
         apiService.removeItemData(data: items)
@@ -86,7 +88,7 @@ class TableItemFuncViewModel {
         itemsGroupedByDate[date]?.count ?? 0
     }
 
-    func findIndex(indexPath: IndexPath) -> Int {
+    func findIndex(indexPath: IndexPath) -> Int? {
         let id = idOfIndex(indexPath: indexPath)
 
         guard let index = items.firstIndex(where: { $0.id == id }) else {
@@ -98,13 +100,17 @@ class TableItemFuncViewModel {
     }
 
     func selectedIndexPath(indexPath: IndexPath) -> Bool {
-        let index = findIndex(indexPath: indexPath)
+        guard let index = findIndex(indexPath: indexPath), items.indices.contains(index) else {
+            return false
+        }
 
         return items[index].isExpanded
     }
 
     func setExpandView(indexPath: IndexPath) {
-        let index = findIndex(indexPath: indexPath)
+        guard let index = findIndex(indexPath: indexPath), items.indices.contains(index) else {
+            return
+        }
 
         items[index].isExpanded.toggle()
     }

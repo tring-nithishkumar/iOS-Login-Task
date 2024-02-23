@@ -15,7 +15,7 @@ class CustomTableViewCell: UITableViewCell {
         summaryButton = UIButton()
         summaryButton.titleLabel?.numberOfLines = 2
         summaryButton.titleLabel?.lineBreakMode = .byTruncatingTail
-        summaryButton.setTitleColor(.black, for: .normal)
+        summaryButton.setTitleColor( traitCollection.userInterfaceStyle == .dark ? .white : .black, for: .normal)
         summaryButton.contentHorizontalAlignment = .left
         summaryButton.addTarget(self, action: #selector(handleUpdate), for: .touchUpInside)
         summaryButtonHeightConstraint = summaryButton.heightAnchor.constraint(equalToConstant: 50)
