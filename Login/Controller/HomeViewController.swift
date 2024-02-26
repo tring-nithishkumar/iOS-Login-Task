@@ -9,13 +9,17 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
-    var userName: String!
+    public var userName: String!
     @IBOutlet var logoutButton: UIBarButtonItem!
     @IBOutlet var titleItem: UIBarButtonItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        homeUI()
+    }
 
+    func userLogin(userName: String) {
+        self.userName = userName
         homeUI()
     }
 

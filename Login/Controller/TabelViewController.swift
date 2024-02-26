@@ -31,7 +31,7 @@ class TabelViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
 
     private func userUI() {
-//        view.backgroundColor = .white
+       view.backgroundColor = UIColor.systemBackground
         let addButton = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(handleAdd))
         let clearButton = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(handleClear))
 

@@ -39,7 +39,7 @@ class AddItemViewController: UIViewController {
     }
 
     private func addUI() {
-//        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
 
         if id != nil {
             title = "Update Item"
@@ -82,7 +82,7 @@ class AddItemViewController: UIViewController {
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.layer.borderWidth = 1.0
         textView.layer.borderColor =
-        traitCollection.userInterfaceStyle == .dark ? UIColor.label.cgColor : UIColor.systemBackground.cgColor
+        traitCollection.userInterfaceStyle == .dark ? UIColor.white.cgColor : UIColor.black.cgColor
         textView.layer.cornerRadius = 5.0
         textView.isScrollEnabled = true
         textView.showsVerticalScrollIndicator = true

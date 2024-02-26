@@ -20,8 +20,6 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        view.endEditing(true)
-
         userNameTextField.isUserInteractionEnabled = false
         passwordTextField.isUserInteractionEnabled = false
     }
@@ -34,7 +32,7 @@ class LoginViewController: UIViewController {
     }
 
     private func setupUI() {
-//        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemBackground
 
         userNameTextField = createTextField(placeholder: "UserName", isSecureTextEntry: false)
         passwordTextField = createTextField(placeholder: "PassWord", isSecureTextEntry: true)
@@ -64,7 +62,7 @@ class LoginViewController: UIViewController {
         textField.placeholder = placeholder
         textField.borderStyle = .roundedRect
         textField.layer.borderColor =
-        traitCollection.userInterfaceStyle == .dark ? UIColor.label.cgColor : UIColor.systemBackground.cgColor
+        traitCollection.userInterfaceStyle == .dark ? UIColor.white.cgColor : UIColor.black.cgColor
         textField.layer.borderWidth = 1.0
         textField.layer.cornerRadius = 5.0
         textField.autocapitalizationType = .none
@@ -113,7 +111,6 @@ class LoginViewController: UIViewController {
                 ) as? HomeViewController else {
                 fatalError("Invalid storyboard")
             }
-
         homeViewController.userName = userName
         navigationController?.pushViewController(homeViewController, animated: true)
         clearTextFields()
